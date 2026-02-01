@@ -1,0 +1,37 @@
+services:
+  portkey-gateway:
+    image: portkeyai/gateway:1.8.0
+    ports:
+      - "8787:8787"
+    environment:
+      - PORT=8787
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8787"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  portus:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config:/app/config:ro
+    environment:
+      - PORTUS_PORT=8080
+      - PORTUS_CONFIG_PATH=/app/config
+      - PORTKEY_GATEWAY_URL=http://portkey-gateway:8787
+      - PORTUS_LOG_LEVEL=info
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PORTUS_KEY_BACKEND_SERVICE=${PORTUS_KEY_BACKEND_SERVICE}
+      - PORTUS_KEY_WEB_APP=${PORTUS_KEY_WEB_APP}
+      - PORTUS_KEY_MOBILE=${PORTUS_KEY_MOBILE}
+    depends_on:
+      portkey-gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

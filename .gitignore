@@ -1,0 +1,37 @@
+# Binaries
+/portus
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Environment variables
+.env
+.env.local
+.backup.env
+
+# Go
+go.work
+vendor/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Docker
+docker-compose.override.yml
+
+# Testing
+coverage.out
+
+/config/
